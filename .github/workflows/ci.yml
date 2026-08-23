@@ -9,9 +9,9 @@ jobs:
     test:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v3
+            - uses: actions/checkout@latest
             - name: Set up Node.js
-              uses: actions/setup-node@v3
+              uses: actions/setup-node@latest
               with:
                 node-version: '24'
             - name: Install dependencies
