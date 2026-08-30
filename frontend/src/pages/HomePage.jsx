@@ -8,6 +8,7 @@ const HomePage = () => {
   const [quizStarted, setQuizStarted] = useState(false)
   const [questionStarted, setQuestionStarted] = useState(false)
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
+  const [score, setScore] = useState(0)
 
   const QuizQuestions = [{
     question: 'What is the capital of France?',
@@ -16,7 +17,8 @@ const HomePage = () => {
         'Paris',
         'Lyon',
         'Marseille'
-    ]
+    ],
+    answer: 'Paris'
   },
   {
     question: 'What is the largest planet in our solar system?',
@@ -25,9 +27,39 @@ const HomePage = () => {
         'Jupiter',
         'Mars',
         'Saturn'
-    ]
+    ],
+    answer: 'Jupiter'
+  },
+  {
+    question: 'What is the chemical symbol for gold?',
+    options: [
+        'Au',
+        'Ag',
+        'Fe',
+        'Pb'
+    ],
+    answer: 'Au'
+  },
+  {
+    question: 'Who wrote the play "Romeo and Juliet"?',
+    options: [
+        'William Shakespeare',
+        'Charles Dickens',
+        'Jane Austen',
+        'Mark Twain'
+    ],
+    answer: 'William Shakespeare'
+  },
+  {
+    question: 'What is the largest ocean on Earth?',
+    options: [
+        'Atlantic Ocean',
+        'Indian Ocean',
+        'Arctic Ocean',
+        'Pacific Ocean'
+    ],
+    answer: 'Pacific Ocean'
   }
-
 ]
 
   useEffect(() => {
@@ -56,11 +88,20 @@ const HomePage = () => {
 
   return (
     <div className='flex flex-col items-center justify-center h-screen'>
+      {quizStarted && (
+        <div className='text-center mb-4'>
+          <h2 className='text-2xl font-bold mb-10'>Score: {score}</h2>
+        </div>
+      )}
       {
         quizStarted && questionStarted ? (
           <QuizQuestion
             quizBank={QuizQuestions[currentQuestionIndex]}
-            onAnswer={() => setCurrentQuestionIndex(prevIndex => prevIndex + 1)}
+            onAnswer={(option) => {
+              setCurrentQuestionIndex(prevIndex => prevIndex + 1)
+              setScore(prevScore => prevScore + (option === QuizQuestions[currentQuestionIndex].answer ? 1 : 0))
+            }}
+
           />
         ) : quizButtonClicked && !quizStarted ? (
         <div className='text-center'>
