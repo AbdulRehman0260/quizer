@@ -1,6 +1,8 @@
 import type { Request, Response } from "express";
+import { batchQuestions, questionPull as questionPullQuery } from "../db/queries/questions.js";
 
-const htmlEntities: Record<string, string> = {
+export const fetchQuizQuestions = async (_req: Request, res: Response) => {
+  const htmlEntities: Record<string, string> = {
   '&quot;': '"',
   '&#039;': "'",
   '&amp;': '&',
@@ -20,11 +22,9 @@ const htmlEntities: Record<string, string> = {
   '&auml;': 'ä',
   '&hellip;': '…'
 }
-
-const decodeHtml = (text: string) =>
+  const decodeHtml = (text: string) =>
   text.replace(/&[a-zA-Z#0-9]+;/g, (match) => htmlEntities[match] ?? match)
 
-export const fetchQuizQuestions = async (_req: Request, res: Response) => {
   try {
     const data = await fetch('https://opentdb.com/api.php?amount=50&category=9&difficulty=medium&type=multiple')
     const json = await data.json()
@@ -39,9 +39,32 @@ export const fetchQuizQuestions = async (_req: Request, res: Response) => {
         answer: answer
       }
     })
-    console.log('Fetched quiz questions:', questions)
-    res.json(questions)
+    res.json(questions);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch quiz questions' })
   }
 }
+
+export const batchQuestionsUpdate = async (_req: Request, res: Response) => {
+  try {
+    const questionsArray = await fetch("http://localhost:3000/api/questions").then(res => res.json());
+    await batchQuestions(questionsArray);
+    res.status(200).json({ message: 'Questions inserted successfully' });
+  } catch (error) {
+    console.error('Error inserting questions:', error);
+    res.status(500).json({ error: 'Failed to insert questions' });
+  }
+};
+
+export const questionPull = async (_req: Request, res: Response) => {
+  try {
+    const quizQuestions = await questionPullQuery();
+    if (!quizQuestions || quizQuestions.length === 0) {
+      return res.status(404).json({ error: 'No questions found' });
+    }
+    return res.status(200).json(quizQuestions);
+  } catch (error) {
+    console.error('Error fetching questions:', error);
+    res.status(500).json({ error: 'Failed to fetch questions' });
+  }
+};

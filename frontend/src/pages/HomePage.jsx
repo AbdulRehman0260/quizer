@@ -9,58 +9,76 @@ const HomePage = () => {
   const [questionStarted, setQuestionStarted] = useState(false)
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [score, setScore] = useState(0)
+  const [quizQuestions, setQuizQuestions] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
 
-  const QuizQuestions = [{
-    question: 'What is the capital of France?',
-    options: [
-        'Bordeaux',
-        'Paris',
-        'Lyon',
-        'Marseille'
-    ],
-    answer: 'Paris'
-  },
-  {
-    question: 'What is the largest planet in our solar system?',
-    options: [
-        'Earth',
-        'Jupiter',
-        'Mars',
-        'Saturn'
-    ],
-    answer: 'Jupiter'
-  },
-  {
-    question: 'What is the chemical symbol for gold?',
-    options: [
-        'Au',
-        'Ag',
-        'Fe',
-        'Pb'
-    ],
-    answer: 'Au'
-  },
-  {
-    question: 'Who wrote the play "Romeo and Juliet"?',
-    options: [
-        'William Shakespeare',
-        'Charles Dickens',
-        'Jane Austen',
-        'Mark Twain'
-    ],
-    answer: 'William Shakespeare'
-  },
-  {
-    question: 'What is the largest ocean on Earth?',
-    options: [
-        'Atlantic Ocean',
-        'Indian Ocean',
-        'Arctic Ocean',
-        'Pacific Ocean'
-    ],
-    answer: 'Pacific Ocean'
-  }
-]
+  useEffect(() => {
+    const fetchQuestions = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/api/questions/quizQuestions')
+        const data = await response.json()
+        setQuizQuestions(data)
+        setIsLoading(false)
+      } catch (error) {
+        console.error('Error fetching quiz questions:', error)
+        setIsLoading(false)
+      }
+    }
+
+    fetchQuestions()
+  }, [])
+
+//   const QuizQuestions = [{
+//     question: 'What is the capital of France?',
+//     options: [
+//         'Bordeaux',
+//         'Paris',
+//         'Lyon',
+//         'Marseille'
+//     ],
+//     answer: 'Paris'
+//   },
+//   {
+//     question: 'What is the largest planet in our solar system?',
+//     options: [
+//         'Earth',
+//         'Jupiter',
+//         'Mars',
+//         'Saturn'
+//     ],
+//     answer: 'Jupiter'
+//   },
+//   {
+//     question: 'What is the chemical symbol for gold?',
+//     options: [
+//         'Au',
+//         'Ag',
+//         'Fe',
+//         'Pb'
+//     ],
+//     answer: 'Au'
+//   },
+//   {
+//     question: 'Who wrote the play "Romeo and Juliet"?',
+//     options: [
+//         'William Shakespeare',
+//         'Charles Dickens',
+//         'Jane Austen',
+//         'Mark Twain'
+//     ],
+//     answer: 'William Shakespeare'
+//   },
+//   {
+//     question: 'What is the largest ocean on Earth?',
+//     options: [
+//         'Atlantic Ocean',
+//         'Indian Ocean',
+//         'Arctic Ocean',
+//         'Pacific Ocean'
+//     ],
+//     answer: 'Pacific Ocean'
+//   }
+// ]
 
   useEffect(() => {
     if (!quizButtonClicked || countdown <= 0) return
@@ -96,10 +114,10 @@ const HomePage = () => {
       {
         quizStarted && questionStarted ? (
           <QuizQuestion
-            quizBank={QuizQuestions[currentQuestionIndex]}
+            quizBank={quizQuestions[currentQuestionIndex]}
             onAnswer={(option) => {
               setCurrentQuestionIndex(prevIndex => prevIndex + 1)
-              setScore(prevScore => prevScore + (option === QuizQuestions[currentQuestionIndex].answer ? 1 : 0))
+              setScore(prevScore => prevScore + (option === quizQuestions[currentQuestionIndex].answer ? 1 : 0))
             }}
 
           />
