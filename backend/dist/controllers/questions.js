@@ -25,13 +25,13 @@ export const fetchQuizQuestions = async (_req, res) => {
         const json = await data.json();
         const questions = json.results.map((question) => {
             const formattedQuestion = decodeHtml(question.question);
-            const correctAnswer = decodeHtml(question.correct_answer);
-            const options = [...question.incorrect_answers.map(decodeHtml), correctAnswer];
+            const answer = decodeHtml(question.correct_answer);
+            const options = [...question.incorrect_answers.map(decodeHtml), answer];
             options.sort(() => Math.random() - 0.5);
             return {
                 question: formattedQuestion,
                 options,
-                correctAnswer
+                answer: answer
             };
         });
         console.log('Fetched quiz questions:', questions);
