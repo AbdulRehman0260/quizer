@@ -1,7 +1,7 @@
 import express from "express";
 import type { Request, Response } from "express";
 import { fetchQuizQuestions, batchQuestionsUpdate, questionPull } from "./controllers/questions.js";
-import { createUserEmail } from "./controllers/users.js";
+import { createUserName } from "./controllers/users.js";
 import cors from "cors";
 
 const app = express()
@@ -15,7 +15,7 @@ app.use(cors({
 }));
 
 //create post route for user creation
-app.post('/api/users',createUserEmail)
+app.post('/api/users',createUserName)
 
 //question get route
 app.get('/api/questions', fetchQuizQuestions)

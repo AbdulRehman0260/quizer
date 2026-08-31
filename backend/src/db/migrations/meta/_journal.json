@@ -15,6 +15,13 @@
       "when": 1788191160176,
       "tag": "0001_lovely_tinkerer",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1788212230453,
+      "tag": "0002_crazy_darwin",
+      "breakpoints": true
     }
   ]
 }

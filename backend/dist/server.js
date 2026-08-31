@@ -1,6 +1,6 @@
 import express from "express";
 import { fetchQuizQuestions, batchQuestionsUpdate, questionPull } from "./controllers/questions.js";
-import { createUserEmail } from "./controllers/users.js";
+import { createUserName } from "./controllers/users.js";
 import cors from "cors";
 const app = express();
 const port = 3000;
@@ -11,7 +11,7 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
 //create post route for user creation
-app.post('/api/users', createUserEmail);
+app.post('/api/users', createUserName);
 //question get route
 app.get('/api/questions', fetchQuizQuestions);
 app.get('/api/questions/quizQuestions', questionPull);

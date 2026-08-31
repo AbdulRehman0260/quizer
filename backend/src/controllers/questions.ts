@@ -26,7 +26,7 @@ export const fetchQuizQuestions = async (_req: Request, res: Response) => {
   text.replace(/&[a-zA-Z#0-9]+;/g, (match) => htmlEntities[match] ?? match)
 
   try {
-    const data = await fetch('https://opentdb.com/api.php?amount=50&category=9&difficulty=medium&type=multiple')
+    const data = await fetch('https://opentdb.com/api.php?amount=50&category=23&difficulty=hard&type=multiple')
     const json = await data.json()
     const questions = json.results.map((question: any) => {
       const formattedQuestion = decodeHtml(question.question)

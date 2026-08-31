@@ -22,7 +22,7 @@ export const fetchQuizQuestions = async (_req, res) => {
     };
     const decodeHtml = (text) => text.replace(/&[a-zA-Z#0-9]+;/g, (match) => htmlEntities[match] ?? match);
     try {
-        const data = await fetch('https://opentdb.com/api.php?amount=50&category=9&difficulty=medium&type=multiple');
+        const data = await fetch('https://opentdb.com/api.php?amount=50&category=23&difficulty=hard&type=multiple');
         const json = await data.json();
         const questions = json.results.map((question) => {
             const formattedQuestion = decodeHtml(question.question);

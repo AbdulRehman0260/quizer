@@ -1,14 +1,14 @@
 import { createUser } from "../db/queries/users.js";
-export const createUserEmail = async (req, res) => {
+export const createUserName = async (req, res) => {
     try {
-        const { email } = req.body;
-        if (email === undefined || email === null || email.trim() === '') {
-            return res.status(400).json({ error: 'Email is required' });
+        const { userName } = req.body;
+        if (userName === undefined || userName === null || userName.trim() === '') {
+            return res.status(400).json({ error: 'User name is required' });
         }
-        if (!email) {
-            return res.status(400).json({ error: 'Missing required fields' });
-        }
-        const newUser = await createUser({ email });
+        // if (!userName) {
+        //   return res.status(400).json({ error: 'Missing required fields' });
+        //  }
+        const newUser = await createUser({ userName });
         res.status(201).json(newUser);
     }
     catch (error) {
