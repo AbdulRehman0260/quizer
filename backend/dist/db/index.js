@@ -1,11 +1,12 @@
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import * as schema from "./schema.js";
-import { getEnvVariable } from "../helpers/database.helpers.js";
+import { getDatabaseUrl } from "../helpers/database.helpers.js";
 import { migrate } from "drizzle-orm/postgres-js/migrator";
 import dotenv from "dotenv";
 dotenv.config();
-const migrationClient = postgres(getEnvVariable('DB_URL'), { max: 1 });
+const databaseUrl = getDatabaseUrl();
+const migrationClient = postgres(databaseUrl, { max: 1 });
 await migrate(drizzle(migrationClient), { migrationsFolder: './src/db/migrations' });
-const client = postgres(getEnvVariable('DB_URL'));
+const client = postgres(databaseUrl);
 export const db = drizzle(client, { schema: schema });

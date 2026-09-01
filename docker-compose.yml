@@ -1,0 +1,44 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: questions
+      POSTGRES_USER: quiz_app
+      POSTGRES_PASSWORD: quiz_app
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U quiz_app -d questions"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+    environment:
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_NAME: questions
+      DB_USER: quiz_app
+      DB_PASSWORD: quiz_app
+      DB_SSLMODE: disable
+      HOST: 0.0.0.0
+      PORT: "3000"
+      CORS_ORIGIN: http://localhost:${FRONTEND_HOST_PORT:-5173}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+    environment:
+      VITE_API_PROXY_TARGET: http://backend:3000
+    depends_on:
+      - backend
+    ports:
+      - "${FRONTEND_HOST_PORT:-5174}:5173"
+
+volumes:
+  postgres_data:

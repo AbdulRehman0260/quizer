@@ -1,40 +1,43 @@
 import { batchQuestions, questionPull as questionPullQuery } from "../db/queries/questions.js";
+const htmlEntities = {
+    '&quot;': '"',
+    '&#039;': "'",
+    '&amp;': '&',
+    '&eacute;': 'e',
+    '&egrave;': 'e',
+    '&iacute;': 'i',
+    '&aacute;': 'a',
+    '&oacute;': 'o',
+    '&uacute;': 'u',
+    '&ntilde;': 'n',
+    '&ldquo;': '"',
+    '&rdquo;': '"',
+    '&lsquo;': "'",
+    '&rsquo;': "'",
+    '&uuml;': 'u',
+    '&ouml;': 'o',
+    '&auml;': 'a',
+    '&hellip;': '...'
+};
+const decodeHtml = (text) => text.replace(/&[a-zA-Z#0-9]+;/g, (match) => htmlEntities[match] ?? match);
+const fetchTriviaQuestions = async () => {
+    const data = await fetch('https://opentdb.com/api.php?amount=50&category=23&difficulty=hard&type=multiple');
+    const json = await data.json();
+    return json.results.map((question) => {
+        const formattedQuestion = decodeHtml(question.question);
+        const answer = decodeHtml(question.correct_answer);
+        const options = [...question.incorrect_answers.map(decodeHtml), answer];
+        options.sort(() => Math.random() - 0.5);
+        return {
+            question: formattedQuestion,
+            options,
+            answer,
+        };
+    });
+};
 export const fetchQuizQuestions = async (_req, res) => {
-    const htmlEntities = {
-        '&quot;': '"',
-        '&#039;': "'",
-        '&amp;': '&',
-        '&eacute;': 'é',
-        '&egrave;': 'è',
-        '&iacute;': 'í',
-        '&aacute;': 'á',
-        '&oacute;': 'ó',
-        '&uacute;': 'ú',
-        '&ntilde;': 'ñ',
-        '&ldquo;': '"',
-        '&rdquo;': '"',
-        '&lsquo;': "'",
-        '&rsquo;': "'",
-        '&uuml;': 'ü',
-        '&ouml;': 'ö',
-        '&auml;': 'ä',
-        '&hellip;': '…'
-    };
-    const decodeHtml = (text) => text.replace(/&[a-zA-Z#0-9]+;/g, (match) => htmlEntities[match] ?? match);
     try {
-        const data = await fetch('https://opentdb.com/api.php?amount=50&category=23&difficulty=hard&type=multiple');
-        const json = await data.json();
-        const questions = json.results.map((question) => {
-            const formattedQuestion = decodeHtml(question.question);
-            const answer = decodeHtml(question.correct_answer);
-            const options = [...question.incorrect_answers.map(decodeHtml), answer];
-            options.sort(() => Math.random() - 0.5);
-            return {
-                question: formattedQuestion,
-                options,
-                answer: answer
-            };
-        });
+        const questions = await fetchTriviaQuestions();
         res.json(questions);
     }
     catch (error) {
@@ -43,7 +46,7 @@ export const fetchQuizQuestions = async (_req, res) => {
 };
 export const batchQuestionsUpdate = async (_req, res) => {
     try {
-        const questionsArray = await fetch("http://localhost:3000/api/questions").then(res => res.json());
+        const questionsArray = await fetchTriviaQuestions();
         await batchQuestions(questionsArray);
         res.status(200).json({ message: 'Questions inserted successfully' });
     }
@@ -54,9 +57,11 @@ export const batchQuestionsUpdate = async (_req, res) => {
 };
 export const questionPull = async (_req, res) => {
     try {
-        const quizQuestions = await questionPullQuery();
+        let quizQuestions = await questionPullQuery();
         if (!quizQuestions || quizQuestions.length === 0) {
-            return res.status(404).json({ error: 'No questions found' });
+            const fetchedQuestions = await fetchTriviaQuestions();
+            await batchQuestions(fetchedQuestions);
+            quizQuestions = await questionPullQuery();
         }
         return res.status(200).json(quizQuestions);
     }

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react'
 import QuizQuestion from '../components/QuizQuestion'
 import { ThreeDots } from 'react-loader-spinner'
 
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ?? ''
+
 const HomePage = () => {
   const [userNameInput, setUserNameInput] = useState('')
   const [userSaved, setUserSaved] = useState(false)
@@ -21,7 +23,7 @@ const HomePage = () => {
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        const response = await fetch('http://localhost:3000/api/questions/quizQuestions')
+        const response = await fetch(`${apiBaseUrl}/api/questions/quizQuestions`)
         const data = await response.json()
         setQuizQuestions(data)
         setIsLoading(false)
@@ -42,7 +44,7 @@ const HomePage = () => {
     setUserError('')
 
     try {
-      const response = await fetch('http://localhost:3000/api/users', {
+      const response = await fetch(`${apiBaseUrl}/api/users`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

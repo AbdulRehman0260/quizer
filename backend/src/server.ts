@@ -3,13 +3,18 @@ import type { Request, Response } from "express";
 import { fetchQuizQuestions, batchQuestionsUpdate, questionPull } from "./controllers/questions.js";
 import { createUserName } from "./controllers/users.js";
 import cors from "cors";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express()
-const port = 3000
+const host = process.env.HOST ?? '0.0.0.0'
+const port = Number(process.env.PORT ?? 3000)
+const corsOrigin = process.env.CORS_ORIGIN ?? 'http://localhost:5173'
 app.use(express.json());
 
 app.use(cors({
-  origin: 'http://localhost:5173', // Allow only your frontend
+  origin: corsOrigin,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'] 
 }));
@@ -23,7 +28,7 @@ app.get('/api/questions/quizQuestions', questionPull)
 app.post('/api/questions/batchUpdate', batchQuestionsUpdate)
 
 
-app.listen(port, async () => {
+app.listen(port, host, async () => {
   console.log(`Example app listening on port ${port}`)
-  console.log(`http://localhost:${port}`)
+  console.log(`http://${host}:${port}`)
 })
