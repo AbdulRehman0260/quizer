@@ -3,7 +3,9 @@ import { fetchQuizQuestions, batchQuestionsUpdate, questionPull } from "./contro
 import { createUserName, fetchUser, getAllUsers, updateUserScore, saveUserScore } from "./controllers/users.js";
 import cors from "cors";
 import dotenv from "dotenv";
-dotenv.config();
+// Load environment variables - use .env.development for local dev, .env for production
+const envFile = process.env.NODE_ENV === 'development' ? '.env.development' : '.env';
+dotenv.config({ path: envFile });
 const app = express();
 const host = process.env.HOST ?? '0.0.0.0';
 const port = Number(process.env.PORT);

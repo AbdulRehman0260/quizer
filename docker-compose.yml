@@ -3,8 +3,8 @@ services:
     image: postgres:16-alpine
     environment:
       POSTGRES_DB: questions
-      POSTGRES_USER: quiz_app
-      POSTGRES_PASSWORD: quiz_app
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -20,8 +20,8 @@ services:
       DB_HOST: postgres
       DB_PORT: "5432"
       DB_NAME: questions
-      DB_USER: quiz_app
-      DB_PASSWORD: quiz_app
+      DB_USER: postgres
+      DB_PASSWORD: postgres
       DB_SSLMODE: disable
       HOST: 0.0.0.0
       PORT: "3000"
