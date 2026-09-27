@@ -3,7 +3,8 @@ import QuizQuestion from '../components/QuizQuestion'
 import { ThreeDots } from 'react-loader-spinner'
 import QuizResultCard from '../components/QuizResultCard'
 
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ?? ''
+// Use environment variable or fallback to localhost for development
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'
 
 
 

@@ -1,4 +1,8 @@
 node_modules
 dist
 *.log
-*.env
+.env
+.env.development
+.env.production
+!.env.example
+!.env.*.example
