@@ -1,6 +1,8 @@
 import type { Request, Response } from "express";
-import {createUser} from "../db/queries/users.js";
+import {createUser, getUserByUserName} from "../db/queries/users.js";
 import type { User } from "../db/schema.js";
+import { createUserScore, getHighestScorePerUser } from "../db/queries/userScores.js";
+import type { UserScore } from "../db/schema.js";
 
 export const createUserName = async (req: Request, res: Response) => {
   try {
@@ -16,5 +18,73 @@ export const createUserName = async (req: Request, res: Response) => {
   } catch (error) {
     console.error('Error creating user:', error);
     res.status(500).json({ error: 'Failed to create user' });
+  }
+};
+
+export const fetchUser = async (req: Request, res: Response) => {
+  try {
+    const { userName } = req.params;
+    if (typeof userName !== 'string') {
+      return res.status(400).json({ error: 'Invalid user name' });
+    }
+    const user = await getUserByUserName(userName);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    console.error('Error fetching user:', error);
+    res.status(500).json({ error: 'Failed to fetch user' });
+  }
+};
+
+export const getAllUsers = async (req: Request, res: Response) => {
+  try {
+    const scores = await getHighestScorePerUser();
+    res.status(200).json(scores);
+  } catch (error) {
+    console.error('Error fetching user scores:', error);
+    res.status(500).json({ error: 'Failed to fetch user scores' });
+  }
+};
+
+export const updateUserScore = async (req: Request, res: Response) => {
+  try {
+    const { userName, score } = req.body;
+    if (!userName || typeof score !== 'number') {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+    //get user by userName
+    const user = await getUserByUserName(userName);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    //create user score object
+    const userScore: UserScore = { userId: user.id, score };
+    // Assuming you have a function to update the user's score in the database
+    const updatedUserScore = await createUserScore(userScore);
+    res.status(200).json(updatedUserScore);
+  } catch (error) {
+    console.error('Error updating user score:', error);
+    res.status(500).json({ error: 'Failed to update user score' });
+  }
+};
+
+export const saveUserScore = async (req: Request, res: Response) => {
+  try {
+    const { userName, score } = req.body;
+    if (!userName || typeof score !== 'number') {
+      return res.status(400).json({ error: 'Missing required fields: userName and score' });
+    }
+    const user = await getUserByUserName(userName);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    const userScore: UserScore = { userId: user.id, score };
+    const savedScore = await createUserScore(userScore);
+    res.status(201).json(savedScore);
+  } catch (error) {
+    console.error('Error saving user score:', error);
+    res.status(500).json({ error: 'Failed to save user score' });
   }
 };
