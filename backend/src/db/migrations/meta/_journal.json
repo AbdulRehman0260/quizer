@@ -22,6 +22,13 @@
       "when": 1788212230453,
       "tag": "0002_crazy_darwin",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1789316539616,
+      "tag": "0003_stiff_colonel_america",
+      "breakpoints": true
     }
   ]
 }
