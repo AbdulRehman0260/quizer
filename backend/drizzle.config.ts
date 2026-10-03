@@ -1,8 +1,5 @@
 
 import { defineConfig } from "drizzle-kit";
-import dotenv from "dotenv";
-import { getDatabaseUrl } from "./src/helpers/database.helpers.js";
-dotenv.config();
 
 
 export default defineConfig({
@@ -10,6 +7,6 @@ export default defineConfig({
     out: "./src/db/migrations",
     dialect: "postgresql",
     dbCredentials: {
-        url: getDatabaseUrl(),
+        url: "postgres://postgres:postgres@localhost:5432/questions",
     }
 });

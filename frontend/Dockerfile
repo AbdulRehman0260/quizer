@@ -22,6 +22,8 @@ RUN npm install -g serve
 
 COPY --from=builder /app/dist ./dist
 
+# Railway injects $PORT; default to 5173 for local Docker.
+ENV PORT=5173
 EXPOSE 5173
 
-CMD ["serve", "-s", "dist", "-l", "5173"]
+CMD ["sh", "-c", "serve -s dist -l ${PORT}"]

@@ -37,9 +37,9 @@ services:
     build:
       context: ./frontend
       args:
-        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://backend:3000}
-    environment:
-      VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://backend:3000}
+        # Baked in at build time. Must be reachable from the user's BROWSER,
+        # never a Docker service name like http://backend:3000.
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:3000}
     depends_on:
       - backend
     ports:
