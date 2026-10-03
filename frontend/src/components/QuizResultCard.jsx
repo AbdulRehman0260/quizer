@@ -1,8 +1,8 @@
 import React from 'react'
 
 const QuizResultCard = ({data}) => {
-  // Sort data by score in descending order (highest first)
-  const sortedData = [...data].sort((a, b) => b.score - a.score)
+  // Sort data by score in descending order (highest first) and keep the top 5
+  const sortedData = [...data].sort((a, b) => b.score - a.score).slice(0, 5)
 
   const getMedalColor = (index) => {
     switch(index) {

@@ -241,7 +241,7 @@ const HomePage = () => {
           </div>
         </div>
       ) : quizCompleted ? (
-        <div className='text-center'>
+        <div className='text-center max-h-screen overflow-y-auto py-8 px-4'>
           <h1 className='text-4xl font-bold mb-4 text-green-700'>Quiz Completed, {userNameInput}!</h1>
           <h2 className='text-2xl font-bold mb-10'>Final Score: {score}</h2>
           <QuizResultCard data={userScores} />
