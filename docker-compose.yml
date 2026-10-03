@@ -17,12 +17,7 @@ services:
     build:
       context: ./backend
     environment:
-      DB_HOST: postgres
-      DB_PORT: "5432"
-      DB_NAME: questions
-      DB_USER: postgres
-      DB_PASSWORD: postgres
-      DB_SSLMODE: disable
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/questions
       HOST: 0.0.0.0
       PORT: "3000"
       CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:5173}
