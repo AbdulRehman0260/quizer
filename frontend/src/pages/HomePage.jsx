@@ -3,8 +3,13 @@ import QuizQuestion from '../components/QuizQuestion'
 import { ThreeDots } from 'react-loader-spinner'
 import QuizResultCard from '../components/QuizResultCard'
 
-// Use environment variable or fallback to localhost for development
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'
+// Use environment variable or fallback to localhost for development.
+// Normalize so a value set without a scheme (e.g. "host.up.railway.app")
+// isn't treated as a relative path by the browser.
+const rawApiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'
+const apiBaseUrl = (/^https?:\/\//.test(rawApiBaseUrl)
+  ? rawApiBaseUrl
+  : `https://${rawApiBaseUrl}`).replace(/\/$/, '')
 
 
 
