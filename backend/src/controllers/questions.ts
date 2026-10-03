@@ -1,32 +1,16 @@
 import type { Request, Response } from "express";
 import { batchQuestions, questionPull as questionPullQuery } from "../db/queries/questions.js";
 
-const htmlEntities: Record<string, string> = {
-  '&quot;': '"',
-  '&#039;': "'",
-  '&amp;': '&',
-  '&eacute;': 'e',
-  '&egrave;': 'e',
-  '&iacute;': 'i',
-  '&aacute;': 'a',
-  '&oacute;': 'o',
-  '&uacute;': 'u',
-  '&ntilde;': 'n',
-  '&ldquo;': '"',
-  '&rdquo;': '"',
-  '&lsquo;': "'",
-  '&rsquo;': "'",
-  '&uuml;': 'u',
-  '&ouml;': 'o',
-  '&auml;': 'a',
-  '&hellip;': '...'
+const decodeHtml = (text: string) => {
+  try {
+    return decodeURIComponent(text)
+  } catch {
+    return text
+  }
 }
 
-const decodeHtml = (text: string) =>
-  text.replace(/&[a-zA-Z#0-9]+;/g, (match) => htmlEntities[match] ?? match)
-
 const fetchTriviaQuestions = async () => {
-  const data = await fetch('https://opentdb.com/api.php?amount=50&category=23&difficulty=hard&type=multiple')
+  const data = await fetch('https://opentdb.com/api.php?amount=50&category=23&difficulty=hard&type=multiple&encode=url3986')
   const json = await data.json()
 
   return json.results.map((question: { question: string; correct_answer: string; incorrect_answers: string[] }) => {
